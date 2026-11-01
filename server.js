@@ -107,7 +107,7 @@ function publicOrder(o) {
   const { photos, ...safe } = o;
   return { ...safe, photoCount: photos.length, photos: photos.map(p => ({ name: p.originalName, url: "/uploads/" + encodeURIComponent(p.filename) })) };
 }
-app.post("/api/orders/:id/simulate-payment", (req, res) => {
+app.post("/api/orders/:id/simulate-payment", requireAdmin, (req, res) => {
   const order = db.orders.find(o => o.id === req.params.id);
   if (!order) return res.status(404).json({ error: "Pedido não encontrado." });
   if (order.paymentStatus !== "pendente_simulacao") return res.status(409).json({ error: "A simulação já foi realizada." });
