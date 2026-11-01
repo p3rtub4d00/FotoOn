@@ -1,40 +1,49 @@
 # FotoOn
 
-Protótipo inicial da experiência do cliente para pedidos de impressão de fotos. Interface responsiva com identidade visual em preto, branco e laranja.
+Sistema web para pedidos de impressão fotográfica, com área do cliente e painel administrativo.
 
-## Estado atual
+## Recursos implementados
 
-- Página inicial do cliente e fluxo de seleção de fotos.
-- Seleção local de arquivos JPG, PNG e WEBP (até 15 MB por arquivo; até 100 fotos por pedido).
-- Seleção demonstrativa de formatos 10×15, 15×21 e 20×30 cm.
-- Preços de exemplo editáveis no arquivo `app.js`, armazenados em centavos.
-- Pedido de demonstração salvo no `localStorage` do navegador.
-- Pagamento real desativado: nenhuma cobrança, QR Code Pix ou transação com cartão é criada.
-- Impressão física desativada: nenhum trabalho é enviado a uma impressora.
-- A opção de “melhoria” é apenas um aviso demonstrativo; não há processamento por IA real.
-- As imagens selecionadas permanecem no navegador e não são enviadas para um servidor.
+- Página pública responsiva para seleção de fotos.
+- API Node/Express para receber e armazenar fotos no servidor.
+- Cadastro de pedido com nome, telefone, tamanho, quantidade, retirada/entrega e observações.
+- Cálculo de preços no servidor, com valores configuráveis pelo painel.
+- Painel administrativo em `/admin`, protegido por senha configurada no ambiente.
+- Sessão em cookie assinado/HttpOnly, limite de tentativas de login e cabeçalhos de segurança.
+- Gestão de pedidos e atualização manual de status.
+- Configuração de preços, taxa de entrega e modalidades disponíveis.
+- Pagamento em modo de simulação, sem Pix real ou cobrança.
+- Impressão física e impressão automática desativadas.
 
 ## Executar localmente
 
-Como esta etapa é uma página estática, abra `index.html` no navegador ou inicie um servidor estático na pasta:
+Requer Node.js 20 ou superior.
 
 ```bash
-npx serve .
+npm install
+ADMIN_PASSWORD="uma-senha-local-forte" SESSION_SECRET="uma-chave-aleatoria-longa" npm start
 ```
+
+Abra `http://localhost:3000` e o painel em `http://localhost:3000/admin`.
 
 ## Publicar no Render
 
-Crie um **Static Site** apontando para este repositório. Não é necessário configurar banco de dados nem variáveis de pagamento nesta etapa. O diretório de publicação é a raiz do repositório.
+Esta versão exige **Web Service**, não Static Site.
 
-## Antes de produção
+1. Crie um Web Service conectado ao repositório `p3rtub4d00/FotoOn`.
+2. Build Command: `npm install`.
+3. Start Command: `npm start`.
+4. Configure `ADMIN_PASSWORD`, `SESSION_SECRET`, `NODE_ENV=production` e `DATA_DIR=/var/data`.
+5. Configure um Persistent Disk montado em `/var/data`. O arquivo `render.yaml` sugere plano Starter e disco de 10 GB; confirme custos e disponibilidade no painel antes de criar.
+6. Use uma senha forte e um segredo aleatório longo e exclusivo para `SESSION_SECRET`.
 
-1. Implementar API e armazenamento privado para imagens; não usar o navegador como armazenamento definitivo.
-2. Implementar autenticação e painel administrativo protegido.
-3. Configurar preços e taxas no servidor, nunca confiar em valores enviados pelo navegador.
-4. Implementar processamento de imagem real e comparação entre original e versão processada.
-5. Implementar integração de pagamento e confirmação por webhook idempotente.
-6. Criar fila de impressão persistente e agente local da impressora.
-7. Validar modelo/driver/papel, qualidade e corte com testes supervisionados.
-8. Definir e testar política de retenção e exclusão dos arquivos.
+## Limitações antes do uso comercial
 
-**Aviso:** este protótipo não é um sistema de pedidos pronto para uso comercial. Os preços exibidos são exemplos e o fluxo não realiza pagamento ou impressão.
+- A melhoria por IA ainda não foi implementada; a opção de demonstração não altera as imagens.
+- Pagamento é apenas simulado; não há integração Mercado Pago, QR Pix real ou webhook.
+- Impressão permanece desativada; não há agente local nem comunicação com impressora USB.
+- O armazenamento JSON é adequado apenas para um MVP de baixo volume e não tem as garantias de um banco de dados. Para operação comercial, migrar pedidos/configurações para banco de dados e fotos para armazenamento de objetos.
+- Validar segurança de upload, qualidade/corte, retenção e exclusão de imagens, privacidade/LGPD e backups.
+- Web Service e disco persistente do Render podem gerar custos; confira os valores atuais antes de publicar.
+
+**Importante:** não publique antes de configurar senha/segredo e disco persistente. Nenhuma cobrança real nem impressão será disparada por este código.
