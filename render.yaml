@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: fotoon
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    disk:
+      name: fotoon-data
+      mountPath: /var/data
+      sizeGB: 10
