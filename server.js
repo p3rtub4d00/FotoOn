@@ -1,5 +1,5 @@
 const express = require("express");
-const session = require("express-session");
+const cookieSession = require("cookie-session");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const multer = require("multer");
@@ -47,12 +47,10 @@ app.disable("x-powered-by");
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
+app.use(cookieSession({
   name: "fotoon.sid",
-  secret: process.env.SESSION_SECRET || "configure-uma-chave-segura-no-render",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 8 * 60 * 60 * 1000 }
+  keys: [process.env.SESSION_SECRET || "configure-uma-chave-segura-no-render"],
+  httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 8 * 60 * 60 * 1000
 }));
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 8, standardHeaders: true, legacyHeaders: false, message: { error: "Muitas tentativas. Aguarde 15 minutos." } });
 function requireAdmin(req, res, next) {
@@ -125,14 +123,11 @@ app.post("/api/admin/login", loginLimiter, (req, res) => {
   if (!expected.length || supplied.length !== expected.length || !crypto.timingSafeEqual(supplied, expected)) {
     return res.status(401).json({ error: "Senha incorreta." });
   }
-  req.session.regenerate(err => {
-    if (err) return res.status(500).json({ error: "Não foi possível iniciar a sessão." });
-    req.session.admin = true;
-    res.json({ ok: true });
-  });
+  req.session = { admin: true };
+  res.json({ ok: true });
 });
 app.get("/api/admin/me", requireAdmin, (_req, res) => res.json({ authenticated: true }));
-app.post("/api/admin/logout", requireAdmin, (req, res) => req.session.destroy(() => res.json({ ok: true })));
+app.post("/api/admin/logout", requireAdmin, (req, res) => { req.session = null; res.json({ ok: true }); });
 app.get("/api/admin/orders", requireAdmin, (_req, res) => res.json({ orders: db.orders.map(publicOrder) }));
 app.get("/api/admin/settings", requireAdmin, (_req, res) => res.json({ settings: db.settings }));
 app.put("/api/admin/settings", requireAdmin, (req, res) => {
