@@ -48,7 +48,7 @@ function openOrder() {
   $("#orderMessage").textContent = "";
   if (!dialog.open) dialog.showModal();
 }
-["#headerUpload", "#heroUpload", "#sizesUpload", "#closingUpload"].forEach(selector => {
+["#headerUpload", "#heroUpload", "#sizesUpload", "#closingUpload", "#cartButton"].forEach(selector => {
   $(selector).addEventListener("click", openOrder);
 });
 $("#choosePhotos").addEventListener("click", () => photoInput.click());
