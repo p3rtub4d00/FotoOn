@@ -105,7 +105,7 @@ app.post("/api/orders", upload.array("photos", 100), (req, res) => {
 });
 function publicOrder(o) {
   const { photos, ...safe } = o;
-  return { ...safe, photoCount: photos.length };
+  return { ...safe, photoCount: photos.length, photos: photos.map(p => ({ name: p.originalName, url: "/uploads/" + encodeURIComponent(p.filename) })) };
 }
 app.post("/api/orders/:id/simulate-payment", (req, res) => {
   const order = db.orders.find(o => o.id === req.params.id);
