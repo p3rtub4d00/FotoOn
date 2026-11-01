@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Administração · FotoOn</title><link rel="stylesheet" href="admin.css"></head>
+<body><main class="shell"><header><a href="/">foto<span>on</span></a><span>Painel administrativo</span></header>
+<section id="login" class="panel login"><h1>Acesso restrito</h1><p>Entre com a senha administrativa.</p><form id="loginForm"><input id="password" type="password" autocomplete="current-password" placeholder="Senha de administrador" required><button>Entrar</button><p id="loginError" class="error"></p></form></section>
+<section id="dashboard" hidden><div class="topline"><div><h1>Visão geral</h1><p>Gerencie pedidos, preços e opções da loja.</p></div><button id="logout" class="secondary">Sair</button></div>
+<div class="stats"><article><small>Pedidos</small><strong id="statOrders">0</strong></article><article><small>Aguardando pagamento simulado</small><strong id="statPending">0</strong></article><article><small>Em andamento</small><strong id="statActive">0</strong></article></div>
+<nav><button class="tab active" data-tab="orders">Pedidos</button><button class="tab" data-tab="settings">Configurações</button></nav>
+<section id="ordersTab"><div class="section-title"><h2>Pedidos recebidos</h2><button id="refresh" class="secondary">Atualizar</button></div><div id="orders" class="orders"></div></section>
+<section id="settingsTab" hidden><h2>Preços e operação</h2><form id="settingsForm" class="panel settings">
+<label>Nome da loja<input id="storeName" maxlength="80"></label>
+<div class="price-grid"><label>10 × 15 cm · R$<input id="p1015" type="number" min="0" step=".01" required></label><label>15 × 21 cm · R$<input id="p1521" type="number" min="0" step=".01" required></label><label>20 × 30 cm · R$<input id="p2030" type="number" min="0" step=".01" required></label></div>
+<label>Taxa de entrega · R$<input id="deliveryFee" type="number" min="0" step=".01" required></label>
+<label class="check"><input id="pickupEnabled" type="checkbox"> Permitir retirada</label><label class="check"><input id="deliveryEnabled" type="checkbox"> Permitir entrega</label>
+<label>Mensagem informativa<textarea id="pixInstructions" rows="3"></textarea></label><button>Salvar configurações</button><p id="settingsMessage"></p></form>
+<p class="notice">Modo atual: pagamento simulado. Impressão automática desativada. Nenhum QR Pix ou cobrança real será gerado.</p></section></section></main>
+<script src="admin.js"></script></body></html>
